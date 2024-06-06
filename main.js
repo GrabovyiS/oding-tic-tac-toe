@@ -25,6 +25,7 @@ const game = (function initializeGame() {
   }
   
   function startGame() {
+    winner = null;
     // Set first player
     this.currentPlayer = players[0];
     
@@ -76,6 +77,19 @@ const game = (function initializeGame() {
       board[2][0] !== null && board[2][0] === board[1][1] && board[1][1] === board[0][2]
     ) {
       return 'WIN';
+    }
+
+    let isTie = true;
+    for (const row of board) {
+      for (const cell of row) {
+        if (board[row][cell] == null) {
+          isTie = false;
+        }
+      }
+    }
+
+    if (isTie) {
+      return 'TIE';
     }
   }
 
