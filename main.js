@@ -44,7 +44,13 @@ const game = (function initializeGame() {
       this.gameBoard[row][column] = symbol;
     }
     console.table(this.gameBoard);
-    // check for victory and tie
+
+    // Check for victory and tie
+    if (this.checkEndOfGame() === 'WIN') {
+      // The last player to make a turn created a winning position
+      winner = currentPlayer;
+      this.announceWinner();
+    }
 
     // Change to next player
     this.currentPlayer = players[(players.indexOf(currentPlayer) + 1) % players.length]
@@ -53,10 +59,34 @@ const game = (function initializeGame() {
   function createPlayer(name, symbol) {
     return {name, symbol};
   }
+
+  function checkEndOfGame() {
+    const board = this.gameBoard;
+
+    if (
+      board[0][0] !== null && board[0][0] === board[0][1] && board[0][1] === board[0][2] || 
+      board[1][0] !== null && board[1][0] === board[1][1] && board[1][1] === board[1][2] || 
+      board[2][0] !== null && board[2][0] === board[2][1] && board[2][1] === board[2][2] || 
+
+      board[0][0] !== null && board[0][0] === board[1][0] && board[1][0] === board[2][0] || 
+      board[0][1] !== null && board[0][1] === board[1][1] && board[1][1] === board[2][1] || 
+      board[0][2] !== null && board[0][2] === board[1][2] && board[1][2] === board[2][2] || 
+
+      board[0][0] !== null && board[0][0] === board[1][1] && board[1][1] === board[2][2] || 
+      board[2][0] !== null && board[2][0] === board[1][1] && board[1][1] === board[0][2]
+    ) {
+      return 'WIN';
+    }
+  }
+
+  function announceWinner() {
+    console.log(`The winner is ${winner.name}!`)
+  }
   
   // current player, gameBoard, makeTurn, checkVictory
-  return {gameBoard, makeBoard, players, makePlayers, startGame, makeTurn};
+  return {gameBoard, makeBoard, players, makePlayers, startGame, makeTurn, checkEndOfGame, announceWinner};
 })();
 
 game.makeBoard(3);
 game.makePlayers(2);
+game.startGame();
