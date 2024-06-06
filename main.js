@@ -1,4 +1,6 @@
-const gameState = (function initializeGame() {
+const game = (function initializeGame() {
+  winner = null;
+
   const gameBoard = [];
   
   function makeBoard(boardSize) {
@@ -12,7 +14,6 @@ const gameState = (function initializeGame() {
 
 
   const players = [];
-  const currentPlayer = 0;
   const SYMBOLS = ['X', 'O'];
 
   function makePlayers(playerCount) {
@@ -24,13 +25,29 @@ const gameState = (function initializeGame() {
   }
   
   function startGame() {
-    // set first player? maybe maybe not
-    // begin listening for input
+    // Set first player
+    this.currentPlayer = players[0];
+    
+    // Begin listening for input
+    while (winner === null) {
+      this.makeTurn(); 
+    }
   }
   
   function makeTurn() {
-    // alter the gameboard
+    const currentPlayer = this.currentPlayer;
+    const symbol = currentPlayer.symbol;
+    const row = prompt(`${currentPlayer.name} to put ${symbol} in row`);
+    const column = prompt(`${currentPlayer.name} to put ${symbol} in column`);
+
+    if (this.gameBoard[row][column] === null) {
+      this.gameBoard[row][column] = symbol;
+    }
+    console.table(this.gameBoard);
     // check for victory and tie
+
+    // Change to next player
+    this.currentPlayer = players[(players.indexOf(currentPlayer) + 1) % players.length]
   }
 
   function createPlayer(name, symbol) {
@@ -38,8 +55,8 @@ const gameState = (function initializeGame() {
   }
   
   // current player, gameBoard, makeTurn, checkVictory
-  return {gameBoard, makeBoard, players, currentPlayer, makePlayers, startGame, makeTurn};
+  return {gameBoard, makeBoard, players, makePlayers, startGame, makeTurn};
 })();
 
-gameState.makeBoard(3);
-gameState.makePlayers(2);
+game.makeBoard(3);
+game.makePlayers(2);
