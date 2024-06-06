@@ -43,12 +43,18 @@ const game = (function initializeGame() {
   function makeTurn() {
     const currentPlayer = this.currentPlayer;
     const symbol = currentPlayer.symbol;
-    const row = prompt(`${currentPlayer.name} to put ${symbol} in row`);
-    const column = prompt(`${currentPlayer.name} to put ${symbol} in column`);
+    
+    let row;
+    let column;
 
-    if (this.gameBoard[row][column] === null) {
-      this.gameBoard[row][column] = symbol;
+    do {
+      row = prompt(`${currentPlayer.name} to put ${symbol} in row`);
+      column = prompt(`${currentPlayer.name} to put ${symbol} in column`);
     }
+    while (this.gameBoard[row][column] !== null)
+
+    this.gameBoard[row][column] = symbol;
+
     console.table(this.gameBoard);
 
     // Check for victory and tie
