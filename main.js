@@ -12,16 +12,21 @@ const game = (function initializeGame() {
     }
   }
 
-
   const players = [];
-  const SYMBOLS = ['X', 'O'];
 
-  function makePlayers(playerCount) {
-    // also set up player order maybe
-    for (let i = 0; i < playerCount; i++) {
-      const name = prompt('whats ur name, player ' + (i+1));
-      players.push(createPlayer(name, SYMBOLS[i]))
+  function createPlayer(name, symbol, color) {
+    // Also setup player order maybe
+    if (players.length >= 8) {
+      return;
     }
+
+    const score = 0;
+    const player = {name, symbol, color, score};
+    players.push(player);
+  }
+
+  function deletePlayer(index) {
+    players.splice(index, 1);
   }
   
   function startGame() {
@@ -50,15 +55,12 @@ const game = (function initializeGame() {
     if (this.checkEndOfGame() === 'WIN') {
       // The last player to make a turn created a winning position
       winner = currentPlayer;
+      this.players[players.indexOf(winner)].score++;
       this.announceWinner();
     }
 
     // Change to next player
     this.currentPlayer = players[(players.indexOf(currentPlayer) + 1) % players.length]
-  }
-
-  function createPlayer(name, symbol) {
-    return {name, symbol};
   }
 
   function checkEndOfGame() {
@@ -82,7 +84,7 @@ const game = (function initializeGame() {
     let isTie = true;
     for (const row of board) {
       for (const cell of row) {
-        if (board[row][cell] == null) {
+        if (cell == null) {
           isTie = false;
         }
       }
@@ -98,9 +100,10 @@ const game = (function initializeGame() {
   }
   
   // current player, gameBoard, makeTurn, checkVictory
-  return {gameBoard, makeBoard, players, makePlayers, startGame, makeTurn, checkEndOfGame, announceWinner};
+  return {gameBoard, makeBoard, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, announceWinner};
 })();
 
 game.makeBoard(3);
-game.makePlayers(2);
+game.createPlayer('bob', 'Ш', 'black');
+game.createPlayer('joe', 'B', 'red');
 game.startGame();
