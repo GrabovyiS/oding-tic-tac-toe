@@ -63,10 +63,19 @@ const game = (function initializeGame() {
       winner = currentPlayer;
       this.players[players.indexOf(winner)].score++;
       this.announceWinner();
+      this.resetBoard();
     }
 
     // Change to next player
     this.currentPlayer = players[(players.indexOf(currentPlayer) + 1) % players.length]
+  }
+
+  function resetBoard() {
+    for (let i = 0; i < this.gameBoard.length; i++) {
+      for (let j = 0; j < this.gameBoard.length; j++) {
+        this.gameBoard[i][j] = null;
+      }
+    }
   }
 
   function checkEndOfGame() {
@@ -106,7 +115,7 @@ const game = (function initializeGame() {
   }
   
   // current player, gameBoard, makeTurn, checkVictory
-  return {gameBoard, makeBoard, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, announceWinner};
+  return {gameBoard, makeBoard, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, announceWinner, resetBoard};
 })();
 
 game.makeBoard(3);
