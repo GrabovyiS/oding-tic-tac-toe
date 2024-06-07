@@ -4,7 +4,7 @@ const game = (function initializeGame() {
   
   const gameBoard = [];
   
-  function makeBoard(boardSize) {
+  function makeBoard(boardSize = 3) {
     this.gameBoard = [];
     for (let i = 0; i < boardSize; i++) {
       this.gameBoard.push([]);
@@ -37,25 +37,15 @@ const game = (function initializeGame() {
     this.currentPlayer = players[0];
     
     // Begin listening for input
-    while (winner === null) {
-      this.makeTurn(); 
-    }
+    // game.classList.remove('disabled');
+    this.on = true;
   }
   
-  function makeTurn() {
-    const currentPlayer = this.currentPlayer;
-    const symbol = currentPlayer.symbol;
-    
-    let row;
-    let column;
-    
-    do {
-      row = prompt(`${currentPlayer.name} to put ${symbol} in row`);
-      column = prompt(`${currentPlayer.name} to put ${symbol} in column`);
-    }
-    while (this.gameBoard[row][column] !== null)
+  function makeTurn(row, column, currentPlayer) {
+    const symbol = currentPlayer.symbol;    
     
     this.gameBoard[row][column] = symbol;
+
     
     console.table(this.gameBoard);
     
@@ -66,6 +56,7 @@ const game = (function initializeGame() {
       this.players[players.indexOf(winner)].score++;
       this.announceWinner();
       this.resetBoard();
+      this.on = false;
     }
     
     // Change to next player
@@ -130,22 +121,52 @@ const renderer = (function initializeRenderer() {
     boardElement.style.gridTemplateColumns = `repeat(${gameBoard.length}, 1fr)`;
     boardElement.style.gridTemplateRows = `repeat(${gameBoard.length}, 1fr)`;
 
-    for (let i = 0; i < gameBoard.length ** 2; i++) {
-      let cell = document.createElement('div');
-      cell.classList.add('cell');
-      boardElement.appendChild(cell);
+    for (let i = 0; i < gameBoard.length; i++) {
+      for (let j = 0; j < gameBoard.length; j++) {
+        let cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.row = i;
+        cell.column = j;
+
+        cell.addEventListener('click', (e) => {
+          game.makeTurn(e.target.row, e.target.column, game.currentPlayer);
+          renderer.renderTurn(e.target, game.currentPlayer)
+        })
+
+        boardElement.appendChild(cell);
+      }
     }
   }
 
-  return {renderBoard, };
+  function renderTurn(clickedCell, currentPlayer) {
+    clickedCell.textContent = currentPlayer.symbol;
+    clickedCell.style.color = currentPlayer.color;
+  }
+
+  return {renderBoard, renderTurn};
 })();
 
 (function setupEventListeners() {
-  let a = 0;
+  const startGameButton = document.querySelector('#start-game');
+  const gridSizeInput = document.querySelector('#grid-size');
+  
+  startGameButton.addEventListener('click', (e) => {
+    const gridSize = gridSizeInput.value;
+    if (gridSize === '') {
+      game.makeBoard();
+    } else {
+      game.makeBoard(gridSize);
+    }
+    renderer.renderBoard(game.gameBoard);
+    gridSizeInput.disabled = true;
+  });
+  
+  
 })();
 
 
-game.makeBoard(3);
+game.makeBoard();
+renderer.renderBoard(game.gameBoard);
 game.createPlayer('bob', 'Ш', 'black');
 game.createPlayer('joe', 'B', 'red');
 game.startGame();
