@@ -1,6 +1,7 @@
+
 const game = (function initializeGame() {
   winner = null;
-
+  
   const gameBoard = [];
   
   function makeBoard(boardSize) {
@@ -11,20 +12,20 @@ const game = (function initializeGame() {
       }
     }
   }
-
+  
   const players = [];
-
+  
   function createPlayer(name, symbol, color) {
     // Also setup player order maybe
     if (players.length >= 8) {
       return;
     }
-
+    
     const score = 0;
     const player = {name, symbol, color, score};
     players.push(player);
   }
-
+  
   function deletePlayer(index) {
     players.splice(index, 1);
   }
@@ -46,17 +47,17 @@ const game = (function initializeGame() {
     
     let row;
     let column;
-
+    
     do {
       row = prompt(`${currentPlayer.name} to put ${symbol} in row`);
       column = prompt(`${currentPlayer.name} to put ${symbol} in column`);
     }
     while (this.gameBoard[row][column] !== null)
-
+    
     this.gameBoard[row][column] = symbol;
-
+    
     console.table(this.gameBoard);
-
+    
     // Check for victory and tie
     if (this.checkEndOfGame() === 'WIN') {
       // The last player to make a turn created a winning position
@@ -65,11 +66,11 @@ const game = (function initializeGame() {
       this.announceWinner();
       this.resetBoard();
     }
-
+    
     // Change to next player
     this.currentPlayer = players[(players.indexOf(currentPlayer) + 1) % players.length]
   }
-
+  
   function resetBoard() {
     for (let i = 0; i < this.gameBoard.length; i++) {
       for (let j = 0; j < this.gameBoard.length; j++) {
@@ -77,25 +78,25 @@ const game = (function initializeGame() {
       }
     }
   }
-
+  
   function checkEndOfGame() {
     const board = this.gameBoard;
-
+    
     if (
       board[0][0] !== null && board[0][0] === board[0][1] && board[0][1] === board[0][2] || 
       board[1][0] !== null && board[1][0] === board[1][1] && board[1][1] === board[1][2] || 
       board[2][0] !== null && board[2][0] === board[2][1] && board[2][1] === board[2][2] || 
-
+      
       board[0][0] !== null && board[0][0] === board[1][0] && board[1][0] === board[2][0] || 
       board[0][1] !== null && board[0][1] === board[1][1] && board[1][1] === board[2][1] || 
       board[0][2] !== null && board[0][2] === board[1][2] && board[1][2] === board[2][2] || 
-
+      
       board[0][0] !== null && board[0][0] === board[1][1] && board[1][1] === board[2][2] || 
       board[2][0] !== null && board[2][0] === board[1][1] && board[1][1] === board[0][2]
     ) {
       return 'WIN';
     }
-
+    
     let isTie = true;
     for (const row of board) {
       for (const cell of row) {
@@ -104,12 +105,12 @@ const game = (function initializeGame() {
         }
       }
     }
-
+    
     if (isTie) {
       return 'TIE';
     }
   }
-
+  
   function announceWinner() {
     console.log(`The winner is ${winner.name}!`)
   }
@@ -118,7 +119,33 @@ const game = (function initializeGame() {
   return {gameBoard, makeBoard, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, announceWinner, resetBoard};
 })();
 
+const renderer = (function initializeRenderer() {
+  function renderBoard(gameBoard) {
+    const boardElement = document.querySelector('#game');
+    while (boardElement.firstChild) {
+      boardElement.removeChild(boardElement.lastChild);
+    }
+
+    boardElement.style.gridTemplateColumns = `repeat(${gameBoard.length}, 1fr)`;
+    boardElement.style.gridTemplateRows = `repeat(${gameBoard.length}, 1fr)`;
+
+    for (let i = 0; i < gameBoard.length ** 2; i++) {
+      let cell = document.createElement('div');
+      cell.classList.add('cell');
+      boardElement.appendChild(cell);
+    }
+  }
+
+  return {renderBoard, };
+})();
+
+(function setupEventListeners() {
+  let a = 0;
+})();
+
+
 game.makeBoard(3);
 game.createPlayer('bob', 'Ш', 'black');
 game.createPlayer('joe', 'B', 'red');
 game.startGame();
+
