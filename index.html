@@ -3,10 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
   <title>Tic Tac Toe</title>
 </head>
 <body>
+  <div class="grid-container">
+    <header></header>
+    <main>
+      <section class="players">
+        <!-- players info here -->
+        <h2>Players</h2>
+        <ol class="player-cards">
+          <li class="player-card">
+            <p class="player">Name</p>
+            <p class="player-score">Score</p>
+          </li>
+          <li class="player-card">
+            <p class="player">Name</p>
+            <p class="player-score">Score</p>
+          </li>
+        </ol>
+
+        <button id="manage-players">Manage players</button>
+      </section>
+      <section class="game-container">
+        <h2>*Player's* turn</h2>
+        <!-- game grid here -->
+        <div class="game">
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+        </div>
+      </section>
+      <section class="settings">
+        <h2>Settings</h2>
+        <div class="inputs">
+          <div class="form-control">
+            <label for="grid-size">Grid size:</label>
+            <input id="grid-size" type="number">
+          </div>
+          <div class="form-control">
+            <label for="grid-size">Winning row size:</label>
+            <input id="win-condition" type="number">
+          </div>
+        </div>
+        <button id="default">Default</button>
+        <button id="start-game">Start game</button>
+      </section>
+    </main>
+  </div>
   <script src="./main.js"></script>
 </body>
 </html>
