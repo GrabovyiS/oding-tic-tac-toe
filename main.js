@@ -5,6 +5,7 @@ const game = (function initializeGame() {
   const gameBoard = [];
   
   function makeBoard(boardSize) {
+    this.gameBoard = [];
     for (let i = 0; i < boardSize; i++) {
       this.gameBoard.push([]);
       for (let j = 0; j < boardSize; j++) {
