@@ -33,6 +33,7 @@ const game = (function initializeGame() {
   
   function startGame() {
     winner = null;
+    this.endOfGame = null;
     // Set first player
     this.currentPlayer = players[0];
     
@@ -44,19 +45,19 @@ const game = (function initializeGame() {
   function makeTurn(row, column, currentPlayer) {
     const symbol = currentPlayer.symbol;    
     
-    this.gameBoard[row][column] = symbol;
-
-    
+    this.gameBoard[row][column] = symbol;    
     console.table(this.gameBoard);
     
-    // Check for victory and tie
-    if (this.checkEndOfGame() === 'WIN') {
-      // The last player to make a turn created a winning position
+    const endOfGame = this.checkEndOfGame();
+    
+    if (endOfGame === 'WIN') {
       winner = currentPlayer;
-      this.players[players.indexOf(winner)].score++;
-      this.announceWinner();
-      this.resetBoard();
+    }
+
+    if (this.endOfGame) {
+      // this.resetBoard();
       this.on = false;
+      return;
     }
     
     // Change to next player
@@ -103,15 +104,17 @@ const game = (function initializeGame() {
     }
   }
   
-  function announceWinner() {
-    console.log(`The winner is ${winner.name}!`)
+  function getWinner() {
+    return winner;
   }
   
   // current player, gameBoard, makeTurn, checkVictory
-  return {gameBoard, makeBoard, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, announceWinner, resetBoard};
+  return {gameBoard, makeBoard, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, getWinner, resetBoard};
 })();
 
 const renderer = (function initializeRenderer() {
+  const gameStatus = document.querySelector('#game-status');
+
   function renderBoard(gameBoard) {
     const boardElement = document.querySelector('#game');
     while (boardElement.firstChild) {
@@ -129,8 +132,9 @@ const renderer = (function initializeRenderer() {
         cell.column = j;
 
         cell.addEventListener('click', (e) => {
+          playerMadeTurn = game.currentPlayer;
           game.makeTurn(e.target.row, e.target.column, game.currentPlayer);
-          renderer.renderTurn(e.target, game.currentPlayer)
+          renderer.renderTurn(e.target, playerMadeTurn, game.currentPlayer);
         })
 
         boardElement.appendChild(cell);
@@ -138,12 +142,42 @@ const renderer = (function initializeRenderer() {
     }
   }
 
-  function renderTurn(clickedCell, currentPlayer) {
-    clickedCell.textContent = currentPlayer.symbol;
-    clickedCell.style.color = currentPlayer.color;
+  function renderFirstStatus(firstPlayer) {
+    gameStatus.textContent = `${firstPlayer.name}'s turn`;
   }
 
-  return {renderBoard, renderTurn};
+  function renderTurn(clickedCell, currentPlayer, nextPlayer) {
+    clickedCell.textContent = currentPlayer.symbol;
+    clickedCell.style.color = currentPlayer.color;
+
+    endOfGame = game.checkEndOfGame();
+
+    if (endOfGame === 'WIN') {
+      this.renderWin(game.getWinner());
+      return;
+    }
+
+    if (endOfGame === 'TIE') {
+      this.renderTie();
+      return;
+    }
+
+    gameStatus.textContent = `${nextPlayer.name}'s turn`;
+  }
+
+  function renderWin(winner) {
+    gameStatus.textContent = `The winner is ${winner.name}!`;
+  }
+  
+  function renderTie() {
+    gameStatus.textContent = `It's a tie!`;
+  }
+
+  function updateScore() {
+    
+  }
+
+  return {renderBoard, renderTurn, renderFirstStatus, renderWin, renderTie, updateScore};
 })();
 
 (function setupEventListeners() {
@@ -158,7 +192,9 @@ const renderer = (function initializeRenderer() {
       game.makeBoard(gridSize);
     }
     renderer.renderBoard(game.gameBoard);
-    gridSizeInput.disabled = true;
+    // gridSizeInput.disabled = true; // disable all inputs and the default button
+    game.startGame();
+    renderer.renderFirstStatus(game.currentPlayer);
   });
   
   
@@ -169,5 +205,5 @@ game.makeBoard();
 renderer.renderBoard(game.gameBoard);
 game.createPlayer('bob', 'Ш', 'black');
 game.createPlayer('joe', 'B', 'red');
-game.startGame();
+
 
