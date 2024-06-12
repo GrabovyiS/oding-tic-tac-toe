@@ -132,6 +132,10 @@ const renderer = (function initializeRenderer() {
         cell.column = j;
 
         cell.addEventListener('click', (e) => {
+          if (clickedCellTaken(e.target.row, e.target.column)) {
+            return;
+          } 
+
           playerMadeTurn = game.currentPlayer;
           game.makeTurn(e.target.row, e.target.column, game.currentPlayer);
           renderer.renderTurn(e.target, playerMadeTurn, game.currentPlayer);
@@ -140,6 +144,14 @@ const renderer = (function initializeRenderer() {
         boardElement.appendChild(cell);
       }
     }
+  }
+
+  function clickedCellTaken(row, column) {
+    if (game.gameBoard[row][column] === null) {
+      return false;
+    }
+
+    return true;
   }
 
   function renderFirstStatus(firstPlayer) {
