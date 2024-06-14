@@ -224,7 +224,12 @@ const renderer = (function initializeRenderer() {
 (function setupEventListeners() {
   const startGameButton = document.querySelector('#start-game');
   const gridSizeInput = document.querySelector('#grid-size');
-  
+  const managePlayersButton = document.querySelector('#manage-players');
+  const managePlayersDialog = document.querySelector('#manage-players-dialog');
+  const managePlayersCloseButton = document.querySelector('#manage-players-close-button');
+  const managePlayersDoneButton = document.querySelector('#manage-players-close-button');
+  const managePlayersCloseButtons = [managePlayersCloseButton, managePlayersDoneButton];
+
   startGameButton.addEventListener('click', (e) => {
     const gridSize = gridSizeInput.value;
     if (gridSize === '') {
@@ -238,7 +243,25 @@ const renderer = (function initializeRenderer() {
     renderer.renderFirstStatus(game.currentPlayer);
   });
   
+  managePlayersButton.addEventListener('click', (e) => {
+    managePlayersDialog.showModal();
+  });
   
+  managePlayersDialog.addEventListener('click', (e) => {
+    console.log(e.target, e.eventPhase);
+    
+    // Clicking backdrop counts as clicking the element directly
+    // Clicking the wrapper child of the modal counts as bubbling (eventPhase === 3)
+    if (e.eventPhase === 2) {
+      managePlayersDialog.close();
+    }
+  })
+  
+  managePlayersCloseButtons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+      managePlayersDialog.close();
+    })
+  })
 })();
 
 

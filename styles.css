@@ -56,12 +56,12 @@ button {
   display: grid;
   height: 100vh;
   grid-template-rows: 80px 1fr;
-}
-
-header {
-  border: var(--border);
-  grid-column: 1 / -1;
-  padding: 12px;
+  
+  header {
+    border: var(--border);
+    grid-column: 1 / -1;
+    padding: 12px;
+  }
 }
 
 main {
@@ -141,4 +141,108 @@ h2 {
 .settings #default {
   margin-top: auto;
   margin-bottom: 12px;
+}
+
+dialog {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max(340px, 60vw);
+  height: 70vh;
+  border: none;
+  
+  
+  #manage-players-close-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    padding: 0;
+    height: 64px;
+    width: 64px;
+  }
+  
+  header {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    background-color: white;
+    
+    h2 {
+      margin-bottom: 0;
+      margin-right: auto;
+    }
+  }
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, .3);
+}
+
+dialog .dialog-wrapper {
+  height: 70vh;
+  overflow-y: auto;
+  border: var(--border);
+  padding: 24px;
+}
+
+#done-button {
+  width: 200px;
+  display: block;
+  margin: 16px auto 0px;
+}
+
+.manage-player-cards {
+  display: flex;
+  justify-content: center;
+  
+  flex-wrap: wrap;
+  gap: 24px;
+
+  border: none;
+  padding: 0;
+
+  .manage-player-card {
+    width: 296px;
+    border: var(--border);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    h3 {
+      font-size: 24px;
+      margin-bottom: auto;
+    }
+
+    .score {
+      display: flex;
+      justify-content: space-between;
+      margin-right: 2px;
+
+      p {
+        font-size: 20px;
+        font-weight: bold;
+      }
+    }
+
+    .manage-buttons {
+      display: flex;
+      gap: 16px;
+
+      button {
+        flex: 1 0 0;
+        padding-left: 4px;
+        padding-right: 4px;
+      }
+
+      .delete-button {
+        border-color: rgb(160, 0, 0);
+        color: rgb(160, 0, 0);
+      }
+    }
+  }
 }
