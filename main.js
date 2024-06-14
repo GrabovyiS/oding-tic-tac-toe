@@ -297,9 +297,18 @@ const renderer = (function initializeRenderer() {
         currentPlayer.name = managePlayersNameInput.value;
         currentPlayer.symbol = managePlayersSymbolInput.value;
         currentPlayer.color = managePlayersColorInput.value;
-
+        
         renderer.renderPlayers();
       });
+      
+      managePlayersDeleteButton.addEventListener('click', (e) => {
+        const currentId = e.target.closest('article').playerId;
+        const currentPlayer = game.players.find((player) => player.id === currentId);
+        const currentPlayerIndex = game.players.indexOf(currentPlayer);
+        game.players.splice(currentPlayerIndex, 1);
+
+        renderer.renderPlayers();
+      })
     }
   }
 
