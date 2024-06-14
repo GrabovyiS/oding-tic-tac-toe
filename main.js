@@ -306,7 +306,7 @@ const renderer = (function initializeRenderer() {
   const managePlayersButton = document.querySelector('#manage-players');
   const managePlayersDialog = document.querySelector('#manage-players-dialog');
   const managePlayersCloseButton = document.querySelector('#manage-players-close-button');
-  const managePlayersDoneButton = document.querySelector('#manage-players-close-button');
+  const managePlayersDoneButton = document.querySelector('#done-button');
   const managePlayersCloseButtons = [managePlayersCloseButton, managePlayersDoneButton];
 
   startGameButton.addEventListener('click', (e) => {
@@ -326,9 +326,7 @@ const renderer = (function initializeRenderer() {
     managePlayersDialog.showModal();
   });
   
-  managePlayersDialog.addEventListener('click', (e) => {
-    console.log(e.target, e.eventPhase);
-    
+  managePlayersDialog.addEventListener('click', (e) => {    
     // Clicking backdrop counts as clicking the element directly
     // Clicking the wrapper child of the modal counts as bubbling (eventPhase === 3)
     if (e.eventPhase === 2) {
