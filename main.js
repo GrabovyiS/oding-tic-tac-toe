@@ -14,6 +14,7 @@ const game = (function initializeGame() {
     }
   }
   
+  let playerIdCounter = 0;
   const players = [];
   
   function createPlayer(name, symbol, color) {
@@ -23,7 +24,8 @@ const game = (function initializeGame() {
     }
     
     const score = 0;
-    const player = {name, symbol, color, score};
+    const player = {id: playerIdCounter, name, symbol, color, score};
+    playerIdCounter++;
     players.push(player);
   }
   
@@ -235,10 +237,10 @@ const renderer = (function initializeRenderer() {
       managePlayersName.classList.add('form-control');
       const managePlayersNameInput = document.createElement('input');
       managePlayersNameInput.value = playerData.name;
-      // managePlayersNameInput.id = playerData.id;
+      managePlayersNameInput.id = `player-${playerData.id}-name`;
       const managePlayersNameLabel = document.createElement('label');
       managePlayersNameLabel.textContent = 'Name:';
-      // managePlayersNameLabel.for = '';
+      managePlayersNameLabel.setAttribute('for', `player-${playerData.id}-name`);
       
       managePlayersName.appendChild(managePlayersNameLabel);
       managePlayersName.appendChild(managePlayersNameInput);
@@ -248,10 +250,10 @@ const renderer = (function initializeRenderer() {
       managePlayersSymbol.classList.add('form-control');
       const managePlayersSymbolInput = document.createElement('input');
       managePlayersSymbolInput.value = playerData.symbol;
-      // managePlayersSymbolInput.id = playerData.id;
+      managePlayersSymbolInput.id = `player-${playerData.id}-symbol`;
       const managePlayersSymbolLabel = document.createElement('label');
       managePlayersSymbolLabel.textContent = 'Symbol:';
-      // managePlayersSymbolLabel.for = '';
+      managePlayersSymbolLabel.setAttribute('for', `player-${playerData.id}-symbol`);
       
       managePlayersSymbol.appendChild(managePlayersSymbolLabel);
       managePlayersSymbol.appendChild(managePlayersSymbolInput);
@@ -262,10 +264,10 @@ const renderer = (function initializeRenderer() {
       managePlayersColor.classList.add('form-control');
       const managePlayersColorInput = document.createElement('input');
       managePlayersColorInput.value = playerData.color;
-      // managePlayersColorInput.id = playerData.id;
+      managePlayersColorInput.id = `player-${playerData.id}-color`;
       const managePlayersColorLabel = document.createElement('label');
       managePlayersColorLabel.textContent = 'Color:';
-      // managePlayersColorLabel.for = '';
+      managePlayersColorLabel.setAttribute('for', `player-${playerData.id}-color`);
       
       managePlayersColor.appendChild(managePlayersColorLabel);
       managePlayersColor.appendChild(managePlayersColorInput);
@@ -284,8 +286,20 @@ const renderer = (function initializeRenderer() {
       managePlayersButtons.appendChild(managePlayersSaveButton);
       managePlayersCard.appendChild(managePlayersButtons);
 
+      managePlayersCard.playerId = playerData.id;
       managePlayersCardsContainer.appendChild(managePlayersCard);
 
+      // Set up event listeners with the inputs
+      managePlayersSaveButton.addEventListener('click', (e) => {
+        const currentId = e.target.closest('article').playerId;
+        const currentPlayer = game.players.find((player) => player.id === currentId);
+        
+        currentPlayer.name = managePlayersNameInput.value;
+        currentPlayer.symbol = managePlayersSymbolInput.value;
+        currentPlayer.color = managePlayersColorInput.value;
+
+        renderer.renderPlayers();
+      });
     }
   }
 
