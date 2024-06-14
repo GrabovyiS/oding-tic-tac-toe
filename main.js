@@ -115,7 +115,8 @@ const game = (function initializeGame() {
 
 const renderer = (function initializeRenderer() {
   const gameStatus = document.querySelector('#game-status');
-  const playerCardsContainer = document.querySelector('.player-cards');;
+  const playerCardsContainer = document.querySelector('.player-cards');
+  const managePlayersCardsContainer = document.querySelector('section.manage-player-cards');
 
   function renderBoard(gameBoard) {
     const boardElement = document.querySelector('#game');
@@ -182,8 +183,10 @@ const renderer = (function initializeRenderer() {
 
   function renderPlayers() {
     playerCardsContainer.textContent = '';
+    managePlayersCardsContainer.textContent = '';
 
     for (const playerData of game.players) {
+      // Display players on main game screen
       const playerText = document.createElement('p');
       playerText.classList.add('player');
       
@@ -207,6 +210,82 @@ const renderer = (function initializeRenderer() {
       playerCard.appendChild(playerScore);
 
       playerCardsContainer.appendChild(playerCard);
+
+      // Display players in Manage players section
+
+      const managePlayersCard = document.createElement('article');
+      managePlayersCard.classList.add('manage-player-card')
+
+      const managePlayersCardHeading = document.createElement('h3');
+      managePlayersCardHeading.textContent = playerData.name;
+      managePlayersCard.appendChild(managePlayersCardHeading);
+
+      const managePlayersScore = document.createElement('div');
+      managePlayersScore.classList.add('score');
+      const managePlayersScoreText = document.createElement('p');
+      managePlayersScoreText.textContent = 'Score:'
+      const managePlayersScoreNumber = document.createElement('p');
+      managePlayersScoreNumber.textContent = playerData.score;
+
+      managePlayersScore.appendChild(managePlayersScoreText);
+      managePlayersScore.appendChild(managePlayersScoreNumber);
+      managePlayersCard.appendChild(managePlayersScore);
+
+      const managePlayersName = document.createElement('div');
+      managePlayersName.classList.add('form-control');
+      const managePlayersNameInput = document.createElement('input');
+      managePlayersNameInput.value = playerData.name;
+      // managePlayersNameInput.id = playerData.id;
+      const managePlayersNameLabel = document.createElement('label');
+      managePlayersNameLabel.textContent = 'Name:';
+      // managePlayersNameLabel.for = '';
+      
+      managePlayersName.appendChild(managePlayersNameLabel);
+      managePlayersName.appendChild(managePlayersNameInput);
+      managePlayersCard.appendChild(managePlayersName);
+      
+      const managePlayersSymbol = document.createElement('div');
+      managePlayersSymbol.classList.add('form-control');
+      const managePlayersSymbolInput = document.createElement('input');
+      managePlayersSymbolInput.value = playerData.symbol;
+      // managePlayersSymbolInput.id = playerData.id;
+      const managePlayersSymbolLabel = document.createElement('label');
+      managePlayersSymbolLabel.textContent = 'Symbol:';
+      // managePlayersSymbolLabel.for = '';
+      
+      managePlayersSymbol.appendChild(managePlayersSymbolLabel);
+      managePlayersSymbol.appendChild(managePlayersSymbolInput);
+      managePlayersCard.appendChild(managePlayersSymbol);
+      
+      
+      const managePlayersColor = document.createElement('div');
+      managePlayersColor.classList.add('form-control');
+      const managePlayersColorInput = document.createElement('input');
+      managePlayersColorInput.value = playerData.color;
+      // managePlayersColorInput.id = playerData.id;
+      const managePlayersColorLabel = document.createElement('label');
+      managePlayersColorLabel.textContent = 'Color:';
+      // managePlayersColorLabel.for = '';
+      
+      managePlayersColor.appendChild(managePlayersColorLabel);
+      managePlayersColor.appendChild(managePlayersColorInput);
+      managePlayersCard.appendChild(managePlayersColor);
+
+      const managePlayersButtons = document.createElement('div');
+      managePlayersButtons.classList.add('manage-buttons');
+      const managePlayersDeleteButton = document.createElement('button');
+      managePlayersDeleteButton.textContent = 'Delete';
+      managePlayersDeleteButton.classList.add('delete-button');
+      const managePlayersSaveButton = document.createElement('button');
+      managePlayersSaveButton.textContent = 'Save';
+      managePlayersSaveButton.classList.add('save-button');
+
+      managePlayersButtons.appendChild(managePlayersDeleteButton);
+      managePlayersButtons.appendChild(managePlayersSaveButton);
+      managePlayersCard.appendChild(managePlayersButtons);
+
+      managePlayersCardsContainer.appendChild(managePlayersCard);
+
     }
   }
 
