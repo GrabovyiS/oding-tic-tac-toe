@@ -52,6 +52,7 @@ const game = (function initializeGame() {
     
     if (endOfGame === 'WIN') {
       winner = currentPlayer;
+      this.currentPlayer.score++;
     }
 
     if (this.endOfGame) {
@@ -114,6 +115,7 @@ const game = (function initializeGame() {
 
 const renderer = (function initializeRenderer() {
   const gameStatus = document.querySelector('#game-status');
+  const playerCardsContainer = document.querySelector('.player-cards');;
 
   function renderBoard(gameBoard) {
     const boardElement = document.querySelector('#game');
@@ -166,6 +168,7 @@ const renderer = (function initializeRenderer() {
 
     if (endOfGame === 'WIN') {
       this.renderWin(game.getWinner());
+      this.renderPlayers();
       return;
     }
 
@@ -177,6 +180,36 @@ const renderer = (function initializeRenderer() {
     gameStatus.textContent = `${nextPlayer.name}'s turn`;
   }
 
+  function renderPlayers() {
+    playerCardsContainer.textContent = '';
+
+    for (const playerData of game.players) {
+      const playerText = document.createElement('p');
+      playerText.classList.add('player');
+      
+      playerSymbol = document.createElement('span')
+      playerSymbol.style.color = playerData.color;
+      playerSymbol.textContent = playerData.symbol + ' ';
+      playerText.appendChild(playerSymbol);
+
+      const playerName = document.createElement('span');
+      playerName.textContent = playerData.name;
+      playerText.appendChild(playerName);
+
+      const playerScore = document.createElement('p');
+      playerScore.classList.add('player-score');
+      playerScore.textContent = playerData.score;
+
+      const playerCard = document.createElement('li');
+      playerCard.classList.add('player-card');
+
+      playerCard.appendChild(playerText);
+      playerCard.appendChild(playerScore);
+
+      playerCardsContainer.appendChild(playerCard);
+    }
+  }
+
   function renderWin(winner) {
     gameStatus.textContent = `The winner is ${winner.name}!`;
   }
@@ -185,11 +218,7 @@ const renderer = (function initializeRenderer() {
     gameStatus.textContent = `It's a tie!`;
   }
 
-  function updateScore() {
-    
-  }
-
-  return {renderBoard, renderTurn, renderFirstStatus, renderWin, renderTie, updateScore};
+  return {renderBoard, renderTurn, renderFirstStatus, renderWin, renderTie, renderPlayers};
 })();
 
 (function setupEventListeners() {
@@ -215,7 +244,7 @@ const renderer = (function initializeRenderer() {
 
 game.makeBoard();
 renderer.renderBoard(game.gameBoard);
-game.createPlayer('bob', 'Ш', 'black');
-game.createPlayer('joe', 'B', 'red');
 
-
+game.createPlayer('Player 1', 'X', 'red');
+game.createPlayer('Player 2', 'O', 'black');
+renderer.renderPlayers();
