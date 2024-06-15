@@ -1,4 +1,3 @@
-
 const game = (function initializeGame() {
   winner = null;
   
@@ -26,7 +25,7 @@ const game = (function initializeGame() {
     const score = 0;
     const player = {id: playerIdCounter, name, symbol, color, score};
     playerIdCounter++;
-    players.push(player);
+    players.unshift(player);
   }
   
   function deletePlayer(index) {
@@ -331,6 +330,7 @@ const renderer = (function initializeRenderer() {
   const managePlayersCloseButton = document.querySelector('#manage-players-close-button');
   const managePlayersDoneButton = document.querySelector('#done-button');
   const managePlayersCloseButtons = [managePlayersCloseButton, managePlayersDoneButton];
+  const managePlayersCreateButton = document.querySelector('#create-player-button');
 
   startGameButton.addEventListener('click', (e) => {
     const gridSize = gridSizeInput.value;
@@ -355,12 +355,17 @@ const renderer = (function initializeRenderer() {
     if (e.eventPhase === 2) {
       managePlayersDialog.close();
     }
-  })
+  });
   
   managePlayersCloseButtons.forEach((button) => {
     button.addEventListener('click', (e) => {
       managePlayersDialog.close();
     })
+  });
+
+  managePlayersCreateButton.addEventListener('click', (e) => {
+    game.createPlayer('New player', helpers.getRandomChar(), helpers.getRandomColor());
+    renderer.renderPlayers();
   })
 })();
 
@@ -371,3 +376,17 @@ renderer.renderBoard(game.gameBoard);
 game.createPlayer('Player 1', 'X', 'red');
 game.createPlayer('Player 2', 'O', 'black');
 renderer.renderPlayers();
+
+const helpers = (function () {
+    function getRandomColor() {
+      return `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
+    }
+    
+    function getRandomChar() {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      return characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    
+    return { getRandomColor, getRandomChar };
+  }
+)();
