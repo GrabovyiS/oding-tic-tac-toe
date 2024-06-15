@@ -149,7 +149,6 @@ dialog {
   left: 50%;
   transform: translateX(-50%);
   width: max(340px, 60vw);
-  height: 70vh;
   border: none;
   
   
@@ -157,7 +156,7 @@ dialog {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 28px;
+    font-size: 36px;
     padding: 0;
     height: 64px;
     width: 64px;
@@ -183,7 +182,7 @@ dialog::backdrop {
 }
 
 dialog .dialog-wrapper {
-  height: 70vh;
+  height: auto;
   overflow-y: auto;
   border: var(--border);
   padding: 24px;
@@ -192,7 +191,7 @@ dialog .dialog-wrapper {
 #done-button {
   width: 200px;
   display: block;
-  margin: 16px auto 0px;
+  margin: 24px auto 0px;
 }
 
 .manage-player-cards {
@@ -213,15 +212,34 @@ dialog .dialog-wrapper {
     flex-direction: column;
     gap: 12px;
     
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: auto;
+      .order-buttons {
+        height: 40px;
+        display: flex;
+        gap: 12px;
+
+        button {
+          width: 40px;
+          border: var(--border);
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+
     h3 {
       font-size: 24px;
-      margin-bottom: auto;
     }
 
     .score {
       display: flex;
       justify-content: space-between;
-      margin-right: 2px;
 
       p {
         font-size: 20px;

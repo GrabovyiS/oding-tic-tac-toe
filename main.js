@@ -25,7 +25,7 @@ const game = (function initializeGame() {
     const score = 0;
     const player = {id: playerIdCounter, name, symbol, color, score};
     playerIdCounter++;
-    players.unshift(player);
+    players.push(player);
   }
   
   function deletePlayer(index) {
@@ -215,11 +215,33 @@ const renderer = (function initializeRenderer() {
       // Display players in Manage players section
 
       const managePlayersCard = document.createElement('article');
-      managePlayersCard.classList.add('manage-player-card')
+      managePlayersCard.classList.add('manage-player-card');
+
+      const managePlayersCardHeader = document.createElement('header');
 
       const managePlayersCardHeading = document.createElement('h3');
       managePlayersCardHeading.textContent = playerData.name;
-      managePlayersCard.appendChild(managePlayersCardHeading);
+      managePlayersCardHeader.appendChild(managePlayersCardHeading);
+
+      const managePlayersOrderButtons = document.createElement('div');
+      managePlayersOrderButtons.classList.add('order-buttons');
+      
+      const backButton = document.createElement('button');
+      const backButtonImage = document.createElement('img');
+      backButtonImage.setAttribute('src', './res/arrow-left-thick.svg');
+      backButtonImage.setAttribute('alt', 'left arrow');
+      backButton.appendChild(backButtonImage);
+
+      const forwardButton = document.createElement('button');
+      const forwardButtonImage = document.createElement('img');
+      forwardButtonImage.setAttribute('src', './res/arrow-right-thick.svg');
+      forwardButtonImage.setAttribute('alt', 'right arrow');
+      forwardButton.appendChild(forwardButtonImage);
+
+      managePlayersOrderButtons.appendChild(backButton);
+      managePlayersOrderButtons.appendChild(forwardButton);
+      managePlayersCardHeader.appendChild(managePlayersOrderButtons);
+      managePlayersCard.appendChild(managePlayersCardHeader);
 
       const managePlayersScore = document.createElement('div');
       managePlayersScore.classList.add('score');
@@ -305,9 +327,29 @@ const renderer = (function initializeRenderer() {
         const currentPlayer = game.players.find((player) => player.id === currentId);
         const currentPlayerIndex = game.players.indexOf(currentPlayer);
         game.players.splice(currentPlayerIndex, 1);
+        
+        renderer.renderPlayers();
+      });
+      
+      forwardButton.addEventListener('click', (e) => {
+        const currentId = e.target.closest('article').playerId;
+        const currentPlayer = game.players.find((player) => player.id === currentId);
+        const currentPlayerIndex = game.players.indexOf(currentPlayer);
+        const players = game.players;
+        [players[currentPlayerIndex], players[currentPlayerIndex + 1]] = [players[currentPlayerIndex + 1], players[currentPlayerIndex]];
 
         renderer.renderPlayers();
-      })
+      });
+
+      backButton.addEventListener('click', (e) => {
+        const currentId = e.target.closest('article').playerId;
+        const currentPlayer = game.players.find((player) => player.id === currentId);
+        const currentPlayerIndex = game.players.indexOf(currentPlayer);
+        const players = game.players;
+        [players[currentPlayerIndex], players[currentPlayerIndex - 1]] = [players[currentPlayerIndex - 1], players[currentPlayerIndex]];
+
+        renderer.renderPlayers();
+      });
     }
   }
 
