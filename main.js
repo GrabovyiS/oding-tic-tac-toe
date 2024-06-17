@@ -364,17 +364,25 @@ const renderer = (function initializeRenderer() {
   function renderTie() {
     gameStatus.textContent = `It's a tie!`;
   }
+  
+  function renderAbort() {
+    gameStatus.textContent = `Game aborted. It's a tie!`;
+  }
 
   function startGame() {
     this.enableGameField();
     this.disableSettings();
 
+    switchButtonToAbort();
+    
     renderBoard(game.gameBoard);
   }
-
+  
   function finishGame(outcome) {
     this.disableGameField();
-    this.enableSettings()
+    this.enableSettings();
+    
+    switchButtonToStart();
     
     if (outcome === 'WIN') {
       this.renderWin(game.getWinner());
@@ -386,11 +394,17 @@ const renderer = (function initializeRenderer() {
       this.renderTie();
       return;
     }
+
+    if (outcome === 'ABORT') {
+      this.renderAbort();
+    }
   }
 
   const gameElement = document.querySelector('#game');
   const playersSettingsElement = document.querySelector('section.players');
   const settingsElement = document.querySelector('section.settings');
+  const startGameButton = document.querySelector('#start-game');
+  const abortGameButton = document.querySelector('#abort-game');
   
   function disableGameField() {
     gameElement.disabled = true;
@@ -410,11 +424,14 @@ const renderer = (function initializeRenderer() {
     settingsButtons.forEach((button) => {
       button.disabled = true;
     });
+
+    startGameButton.disabled = false;
+    abortGameButton.disabled = false;
     
     settingsInputs = document.querySelectorAll('section.players input, section.settings input');
     settingsInputs.forEach((input) => {
       input.disabled = true;
-    })
+    });
   }
 
   function enableSettings() {
@@ -430,14 +447,24 @@ const renderer = (function initializeRenderer() {
     settingsInputs.forEach((input) => {
       input.disabled = false;
     })
-
   }
 
-  return {renderBoard, renderTurn, renderFirstStatus, renderWin, renderTie, renderPlayers, startGame, finishGame, disableGameField, enableGameField, disableSettings, enableSettings};
+  function switchButtonToAbort() {
+    abortGameButton.classList.remove('display-none');
+    startGameButton.classList.add('display-none');
+  }
+
+  function switchButtonToStart() {
+    abortGameButton.classList.add('display-none');
+    startGameButton.classList.remove('display-none');
+  }
+
+  return {renderBoard, renderTurn, renderFirstStatus, renderWin, renderTie, renderPlayers, startGame, finishGame, disableGameField, enableGameField, disableSettings, enableSettings, renderAbort};
 })();
 
 (function setupEventListeners() {
   const startGameButton = document.querySelector('#start-game');
+  abortGameButton = document.querySelector('#abort-game');
   const gridSizeInput = document.querySelector('#grid-size');
   const managePlayersButton = document.querySelector('#manage-players');
   const managePlayersDialog = document.querySelector('#manage-players-dialog');
@@ -458,6 +485,11 @@ const renderer = (function initializeRenderer() {
     game.startGame();
     renderer.renderFirstStatus(game.currentPlayer);
   });
+
+  abortGameButton.addEventListener('click', (e) => {
+    renderer.finishGame('ABORT');
+    game.on = false;
+  })
   
   managePlayersButton.addEventListener('click', (e) => {
     managePlayersDialog.showModal();

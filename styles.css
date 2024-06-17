@@ -266,10 +266,14 @@ dialog .dialog-wrapper {
 }
 
 .disabled, button:disabled, input:disabled {
-  background-color: #c7c7c7;
+  background-color: #dddddd;
   cursor: not-allowed;
 }
 
 button:disabled, input:disabled {
   color: black;
+}
+
+.display-none {
+  display: none;
 }
