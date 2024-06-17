@@ -284,10 +284,13 @@ const renderer = (function initializeRenderer() {
       const managePlayersColor = document.createElement('div');
       managePlayersColor.classList.add('form-control');
       const managePlayersColorInput = document.createElement('input');
+      managePlayersColorInput.style.color = playerData.color;
+      managePlayersColorInput.style.borderColor = playerData.color;
       managePlayersColorInput.value = playerData.color;
       managePlayersColorInput.id = `player-${playerData.id}-color`;
       const managePlayersColorLabel = document.createElement('label');
       managePlayersColorLabel.textContent = 'Color:';
+      managePlayersColorLabel.style.color = playerData.color;
       managePlayersColorLabel.setAttribute('for', `player-${playerData.id}-color`);
       
       managePlayersColor.appendChild(managePlayersColorLabel);
