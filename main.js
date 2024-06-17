@@ -1,4 +1,5 @@
 const game = (function initializeGame() {
+  on = false;
   winner = null;
   
   const gameBoard = [];
@@ -89,6 +90,7 @@ const game = (function initializeGame() {
       board[0][0] !== null && board[0][0] === board[1][1] && board[1][1] === board[2][2] || 
       board[2][0] !== null && board[2][0] === board[1][1] && board[1][1] === board[0][2]
     ) {
+      this.on = false;
       return 'WIN';
     }
     
@@ -102,6 +104,7 @@ const game = (function initializeGame() {
     }
     
     if (isTie) {
+      this.on = false;
       return 'TIE';
     }
   }
@@ -111,7 +114,7 @@ const game = (function initializeGame() {
   }
   
   // current player, gameBoard, makeTurn, checkVictory
-  return {gameBoard, makeBoard, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, getWinner, resetBoard};
+  return {gameBoard, makeBoard, on, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, getWinner, resetBoard};
 })();
 
 const renderer = (function initializeRenderer() {
@@ -140,6 +143,10 @@ const renderer = (function initializeRenderer() {
             return;
           } 
 
+          if (e.target.closest('#game').disabled) {
+            return;
+          }
+
           playerMadeTurn = game.currentPlayer;
           game.makeTurn(e.target.row, e.target.column, game.currentPlayer);
           renderer.renderTurn(e.target, playerMadeTurn, game.currentPlayer);
@@ -166,16 +173,10 @@ const renderer = (function initializeRenderer() {
     clickedCell.textContent = currentPlayer.symbol;
     clickedCell.style.color = currentPlayer.color;
 
-    endOfGame = game.checkEndOfGame();
+    let outcome = game.checkEndOfGame();
 
-    if (endOfGame === 'WIN') {
-      this.renderWin(game.getWinner());
-      this.renderPlayers();
-      return;
-    }
-
-    if (endOfGame === 'TIE') {
-      this.renderTie();
+    if (outcome) {
+      this.finishGame(outcome);
       return;
     }
 
@@ -364,7 +365,75 @@ const renderer = (function initializeRenderer() {
     gameStatus.textContent = `It's a tie!`;
   }
 
-  return {renderBoard, renderTurn, renderFirstStatus, renderWin, renderTie, renderPlayers};
+  function startGame() {
+    this.enableGameField();
+    this.disableSettings();
+
+    renderBoard(game.gameBoard);
+  }
+
+  function finishGame(outcome) {
+    this.disableGameField();
+    this.enableSettings()
+    
+    if (outcome === 'WIN') {
+      this.renderWin(game.getWinner());
+      this.renderPlayers();
+      return;
+    }
+
+    if (outcome === 'TIE') {
+      this.renderTie();
+      return;
+    }
+  }
+
+  const gameElement = document.querySelector('#game');
+  const playersSettingsElement = document.querySelector('section.players');
+  const settingsElement = document.querySelector('section.settings');
+  
+  function disableGameField() {
+    gameElement.disabled = true;
+    gameElement.classList.add('disabled');
+  }
+  
+  function enableGameField() {
+    gameElement.disabled = false;
+    gameElement.classList.remove('disabled');
+  }
+  
+  function disableSettings() {
+    settingsElement.disabled = true;
+    playersSettingsElement.disabled = true;
+
+    settingsButtons = document.querySelectorAll('section.players button, section.settings button');
+    settingsButtons.forEach((button) => {
+      button.disabled = true;
+    });
+    
+    settingsInputs = document.querySelectorAll('section.players input, section.settings input');
+    settingsInputs.forEach((input) => {
+      input.disabled = true;
+    })
+  }
+
+  function enableSettings() {
+    settingsElement.disabled = false;
+    playersSettingsElement.disabled = false;
+
+    settingsButtons = document.querySelectorAll('section.players button, section.settings button');
+    settingsButtons.forEach((button) => {
+      button.disabled = false;
+    });
+    
+    settingsInputs = document.querySelectorAll('section.players input, section.settings input');
+    settingsInputs.forEach((input) => {
+      input.disabled = false;
+    })
+
+  }
+
+  return {renderBoard, renderTurn, renderFirstStatus, renderWin, renderTie, renderPlayers, startGame, finishGame, disableGameField, enableGameField, disableSettings, enableSettings};
 })();
 
 (function setupEventListeners() {
@@ -384,8 +453,8 @@ const renderer = (function initializeRenderer() {
     } else {
       game.makeBoard(gridSize);
     }
-    renderer.renderBoard(game.gameBoard);
-    // gridSizeInput.disabled = true; // disable all inputs and the default button
+
+    renderer.startGame();
     game.startGame();
     renderer.renderFirstStatus(game.currentPlayer);
   });
@@ -417,6 +486,7 @@ const renderer = (function initializeRenderer() {
 
 game.makeBoard();
 renderer.renderBoard(game.gameBoard);
+renderer.disableGameField();
 
 game.createPlayer('Player 1', 'X', 'red');
 game.createPlayer('Player 2', 'O', 'black');
