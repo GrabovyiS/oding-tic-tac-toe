@@ -3,6 +3,7 @@ const game = (function initializeGame() {
   winner = null;
   
   const gameBoard = [];
+  let winningRowSize = 3;
   
   function makeBoard(boardSize = 3) {
     this.gameBoard = [];
@@ -78,19 +79,7 @@ const game = (function initializeGame() {
   function checkEndOfGame() {
     const board = this.gameBoard;
     
-    if (
-      board[0][0] !== null && board[0][0] === board[0][1] && board[0][1] === board[0][2] || 
-      board[1][0] !== null && board[1][0] === board[1][1] && board[1][1] === board[1][2] || 
-      board[2][0] !== null && board[2][0] === board[2][1] && board[2][1] === board[2][2] || 
-      
-      board[0][0] !== null && board[0][0] === board[1][0] && board[1][0] === board[2][0] || 
-      board[0][1] !== null && board[0][1] === board[1][1] && board[1][1] === board[2][1] || 
-      board[0][2] !== null && board[0][2] === board[1][2] && board[1][2] === board[2][2] || 
-      
-      board[0][0] !== null && board[0][0] === board[1][1] && board[1][1] === board[2][2] || 
-      board[2][0] !== null && board[2][0] === board[1][1] && board[1][1] === board[0][2]
-    ) {
-      this.on = false;
+    if (checkWin()) {
       return 'WIN';
     }
     
@@ -112,9 +101,67 @@ const game = (function initializeGame() {
   function getWinner() {
     return winner;
   }
+
+  function checkWin() {
+    for (let i = 0; i < game.gameBoard.length; i++) {
+      for (let j = 0; j < game.gameBoard.length; j++) {
+        // for each cell
+        const column = [];
+        for (let k = 0; k < winningRowSize; k++) {
+          if (i + winningRowSize > game.gameBoard.length) {
+            break;
+          }
+          
+          column.push(game.gameBoard[i + k][j]);
+        }
+
+        const row = [];
+        for (let k = 0; k < winningRowSize; k++) {
+          if (j + winningRowSize > game.gameBoard.length) {
+            break;
+          }
+          
+          row.push(game.gameBoard[i][j + k]);
+        }
+        
+        const rightDiagonal = [];
+        for (let k = 0; k < winningRowSize; k++) {
+          if (i + winningRowSize > game.gameBoard.length || j + winningRowSize > game.gameBoard.length) {
+            break;
+          }
+
+          rightDiagonal.push(game.gameBoard[i + k][j + k]);
+        }
+        
+        const leftDiagonal = [];
+        for (let k = 0; k < winningRowSize; k++) {
+          if (i - winningRowSize < 0 || j - winningRowSize < 0) {
+            break;
+          }
+
+          leftDiagonal.push(game.gameBoard[i - k][j - k]);
+        }
+
+        if (column.every((el) => el === column[0]) && column[0]) {
+          return true;
+        }
+
+        if (row.every((el) => el === row[0]) && row[0]) {
+          return true;
+        }
+
+        if (rightDiagonal.every((el) => el === rightDiagonal[0]) && rightDiagonal[0]) {
+          return true;
+        }
+
+        if (leftDiagonal.every((el) => el === leftDiagonal[0]) && leftDiagonal[0]) {
+          return true;
+        }
+      }
+    }
+  }
   
-  // current player, gameBoard, makeTurn, checkVictory
-  return {gameBoard, makeBoard, on, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, getWinner, resetBoard};
+  return {gameBoard, makeBoard, on, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, getWinner, resetBoard, checkWin};
 })();
 
 const renderer = (function initializeRenderer() {
