@@ -525,6 +525,7 @@ const renderer = (function initializeRenderer() {
   const abortGameButton = document.querySelector('#abort-game');
   const gridSizeInput = document.querySelector('#grid-size');
   const winningRowSizeInput = document.querySelector('#win-condition');
+  const defaultButton = document.querySelector('#default');
   const managePlayersButton = document.querySelector('#manage-players');
   const managePlayersDialog = document.querySelector('#manage-players-dialog');
   const managePlayersCloseButton = document.querySelector('#manage-players-close-button');
@@ -577,6 +578,11 @@ const renderer = (function initializeRenderer() {
   managePlayersCreateButton.addEventListener('click', (e) => {
     game.createPlayer('New player', helpers.getRandomChar(), helpers.getRandomColor());
     renderer.renderPlayers();
+  });
+
+  defaultButton.addEventListener('click', (e) => {
+    gridSizeInput.value = game.DEFAULT_GRID_SIZE;
+    winningRowSizeInput.value = game.DEFAULT_WINNING_ROW_SIZE;
   })
 })();
 
