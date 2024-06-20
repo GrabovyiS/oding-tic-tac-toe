@@ -1,9 +1,11 @@
 const game = (function initializeGame() {
   on = false;
   winner = null;
+  this.DEFAULT_GRID_SIZE = 3;
+  this.DEFAULT_WINNING_ROW_SIZE = 3;
+  this.winningRowSize;
   
   const gameBoard = [];
-  let winningRowSize = 3;
   
   function makeBoard(boardSize = 3) {
     this.gameBoard = [];
@@ -13,6 +15,14 @@ const game = (function initializeGame() {
         this.gameBoard[i].push(null);
       }
     }
+  }
+
+  function setWinningRowSize(size) {
+    this.winningRowSize = size;
+  }
+
+  function getWinningRowSize() {
+    return this.winningRowSize;
   }
   
   let playerIdCounter = 0;
@@ -41,7 +51,6 @@ const game = (function initializeGame() {
     this.currentPlayer = players[0];
     
     // Begin listening for input
-    // game.classList.remove('disabled');
     this.on = true;
   }
   
@@ -103,6 +112,8 @@ const game = (function initializeGame() {
   }
 
   function checkWin() {
+    const winningRowSize = game.getWinningRowSize();
+
     for (let i = 0; i < game.gameBoard.length; i++) {
       for (let j = 0; j < game.gameBoard.length; j++) {
         // for each cell
@@ -161,7 +172,7 @@ const game = (function initializeGame() {
     }
   }
   
-  return {gameBoard, makeBoard, on, players, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, getWinner, resetBoard, checkWin};
+  return {gameBoard, makeBoard, on, players, getWinningRowSize, setWinningRowSize, DEFAULT_GRID_SIZE, DEFAULT_WINNING_ROW_SIZE, createPlayer, deletePlayer, startGame, makeTurn, checkEndOfGame, getWinner, resetBoard, checkWin};
 })();
 
 const renderer = (function initializeRenderer() {
@@ -511,8 +522,9 @@ const renderer = (function initializeRenderer() {
 
 (function setupEventListeners() {
   const startGameButton = document.querySelector('#start-game');
-  abortGameButton = document.querySelector('#abort-game');
+  const abortGameButton = document.querySelector('#abort-game');
   const gridSizeInput = document.querySelector('#grid-size');
+  const winningRowSizeInput = document.querySelector('#win-condition');
   const managePlayersButton = document.querySelector('#manage-players');
   const managePlayersDialog = document.querySelector('#manage-players-dialog');
   const managePlayersCloseButton = document.querySelector('#manage-players-close-button');
@@ -521,12 +533,18 @@ const renderer = (function initializeRenderer() {
   const managePlayersCreateButton = document.querySelector('#create-player-button');
 
   startGameButton.addEventListener('click', (e) => {
-    const gridSize = gridSizeInput.value;
-    if (gridSize === '') {
-      game.makeBoard();
-    } else {
-      game.makeBoard(gridSize);
+    if (!gridSizeInput.value) {
+      gridSizeInput.value = game.DEFAULT_GRID_SIZE;
     }
+    game.makeBoard(gridSizeInput.value);
+
+    if (!winningRowSizeInput.value) {
+      winningRowSizeInput.value = game.DEFAULT_WINNING_ROW_SIZE;
+      game.setWinningRowSize(game.DEFAULT_WINNING_ROW_SIZE);
+    } else {
+      game.setWinningRowSize(winningRowSizeInput.value);
+    }
+
 
     renderer.startGame();
     game.startGame();
