@@ -247,172 +247,181 @@ const renderer = (function initializeRenderer() {
 
     for (const playerData of game.players) {
       // Display players on main game screen
-      const playerText = document.createElement('p');
-      playerText.classList.add('player');
-      
-      playerSymbol = document.createElement('span')
-      playerSymbol.style.color = playerData.color;
-      playerSymbol.textContent = playerData.symbol + ' ';
-      playerText.appendChild(playerSymbol);
+      const playerScoreCard = createPlayerScoreCard(playerData.name, playerData.symbol, playerData.color, playerData.score);
+      playerCardsContainer.appendChild(playerScoreCard);
 
-      const playerName = document.createElement('span');
-      playerName.textContent = playerData.name;
-      playerText.appendChild(playerName);
-
-      const playerScore = document.createElement('p');
-      playerScore.classList.add('player-score');
-      playerScore.textContent = playerData.score;
-
-      const playerCard = document.createElement('li');
-      playerCard.classList.add('player-card');
-
-      playerCard.appendChild(playerText);
-      playerCard.appendChild(playerScore);
-
-      playerCardsContainer.appendChild(playerCard);
-
-      // Display players in Manage players section
-
-      const managePlayersCard = document.createElement('article');
-      managePlayersCard.classList.add('manage-player-card');
-
-      const managePlayersCardHeader = document.createElement('header');
-
-      const managePlayersCardHeading = document.createElement('h3');
-      managePlayersCardHeading.textContent = playerData.name;
-      managePlayersCardHeader.appendChild(managePlayersCardHeading);
-
-      const managePlayersOrderButtons = document.createElement('div');
-      managePlayersOrderButtons.classList.add('order-buttons');
-      
-      const backButton = document.createElement('button');
-      const backButtonImage = document.createElement('img');
-      backButtonImage.setAttribute('src', './res/arrow-left-thick.svg');
-      backButtonImage.setAttribute('alt', 'left arrow');
-      backButton.appendChild(backButtonImage);
-
-      const forwardButton = document.createElement('button');
-      const forwardButtonImage = document.createElement('img');
-      forwardButtonImage.setAttribute('src', './res/arrow-right-thick.svg');
-      forwardButtonImage.setAttribute('alt', 'right arrow');
-      forwardButton.appendChild(forwardButtonImage);
-
-      managePlayersOrderButtons.appendChild(backButton);
-      managePlayersOrderButtons.appendChild(forwardButton);
-      managePlayersCardHeader.appendChild(managePlayersOrderButtons);
-      managePlayersCard.appendChild(managePlayersCardHeader);
-
-      const managePlayersScore = document.createElement('div');
-      managePlayersScore.classList.add('score');
-      const managePlayersScoreText = document.createElement('p');
-      managePlayersScoreText.textContent = 'Score:'
-      const managePlayersScoreNumber = document.createElement('p');
-      managePlayersScoreNumber.textContent = playerData.score;
-
-      managePlayersScore.appendChild(managePlayersScoreText);
-      managePlayersScore.appendChild(managePlayersScoreNumber);
-      managePlayersCard.appendChild(managePlayersScore);
-
-      const managePlayersName = document.createElement('div');
-      managePlayersName.classList.add('form-control');
-      const managePlayersNameInput = document.createElement('input');
-      managePlayersNameInput.value = playerData.name;
-      managePlayersNameInput.id = `player-${playerData.id}-name`;
-      const managePlayersNameLabel = document.createElement('label');
-      managePlayersNameLabel.textContent = 'Name:';
-      managePlayersNameLabel.setAttribute('for', `player-${playerData.id}-name`);
-      
-      managePlayersName.appendChild(managePlayersNameLabel);
-      managePlayersName.appendChild(managePlayersNameInput);
-      managePlayersCard.appendChild(managePlayersName);
-      
-      const managePlayersSymbol = document.createElement('div');
-      managePlayersSymbol.classList.add('form-control');
-      const managePlayersSymbolInput = document.createElement('input');
-      managePlayersSymbolInput.value = playerData.symbol;
-      managePlayersSymbolInput.id = `player-${playerData.id}-symbol`;
-      const managePlayersSymbolLabel = document.createElement('label');
-      managePlayersSymbolLabel.textContent = 'Symbol:';
-      managePlayersSymbolLabel.setAttribute('for', `player-${playerData.id}-symbol`);
-      
-      managePlayersSymbol.appendChild(managePlayersSymbolLabel);
-      managePlayersSymbol.appendChild(managePlayersSymbolInput);
-      managePlayersCard.appendChild(managePlayersSymbol);
-      
-      
-      const managePlayersColor = document.createElement('div');
-      managePlayersColor.classList.add('form-control');
-      const managePlayersColorInput = document.createElement('input');
-      managePlayersColorInput.style.color = playerData.color;
-      managePlayersColorInput.style.borderColor = playerData.color;
-      managePlayersColorInput.value = playerData.color;
-      managePlayersColorInput.id = `player-${playerData.id}-color`;
-      const managePlayersColorLabel = document.createElement('label');
-      managePlayersColorLabel.textContent = 'Color:';
-      managePlayersColorLabel.style.color = playerData.color;
-      managePlayersColorLabel.setAttribute('for', `player-${playerData.id}-color`);
-      
-      managePlayersColor.appendChild(managePlayersColorLabel);
-      managePlayersColor.appendChild(managePlayersColorInput);
-      managePlayersCard.appendChild(managePlayersColor);
-
-      const managePlayersButtons = document.createElement('div');
-      managePlayersButtons.classList.add('manage-buttons');
-      const managePlayersDeleteButton = document.createElement('button');
-      managePlayersDeleteButton.textContent = 'Delete';
-      managePlayersDeleteButton.classList.add('delete-button');
-      const managePlayersSaveButton = document.createElement('button');
-      managePlayersSaveButton.textContent = 'Save';
-      managePlayersSaveButton.classList.add('save-button');
-
-      managePlayersButtons.appendChild(managePlayersDeleteButton);
-      managePlayersButtons.appendChild(managePlayersSaveButton);
-      managePlayersCard.appendChild(managePlayersButtons);
-
-      managePlayersCard.playerId = playerData.id;
-      managePlayersCardsContainer.appendChild(managePlayersCard);
-
-      // Set up event listeners with the inputs
-      managePlayersSaveButton.addEventListener('click', (e) => {
-        const currentId = e.target.closest('article').playerId;
-        const currentPlayer = game.players.find((player) => player.id === currentId);
-        
-        currentPlayer.name = managePlayersNameInput.value;
-        currentPlayer.symbol = managePlayersSymbolInput.value;
-        currentPlayer.color = managePlayersColorInput.value;
-        
-        renderer.renderPlayers();
-      });
-      
-      managePlayersDeleteButton.addEventListener('click', (e) => {
-        const currentId = e.target.closest('article').playerId;
-        const currentPlayer = game.players.find((player) => player.id === currentId);
-        const currentPlayerIndex = game.players.indexOf(currentPlayer);
-        game.players.splice(currentPlayerIndex, 1);
-        
-        renderer.renderPlayers();
-      });
-      
-      forwardButton.addEventListener('click', (e) => {
-        const currentId = e.target.closest('article').playerId;
-        const currentPlayer = game.players.find((player) => player.id === currentId);
-        const currentPlayerIndex = game.players.indexOf(currentPlayer);
-        const players = game.players;
-        [players[currentPlayerIndex], players[currentPlayerIndex + 1]] = [players[currentPlayerIndex + 1], players[currentPlayerIndex]];
-
-        renderer.renderPlayers();
-      });
-
-      backButton.addEventListener('click', (e) => {
-        const currentId = e.target.closest('article').playerId;
-        const currentPlayer = game.players.find((player) => player.id === currentId);
-        const currentPlayerIndex = game.players.indexOf(currentPlayer);
-        const players = game.players;
-        [players[currentPlayerIndex], players[currentPlayerIndex - 1]] = [players[currentPlayerIndex - 1], players[currentPlayerIndex]];
-
-        renderer.renderPlayers();
-      });
+      // Display players in manage settings
+      const managePlayersCard = createManagePlayersCard(playerData.id, playerData.name, playerData.symbol, playerData.color, playerData.score);
+      managePlayersCardsContainer.appendChild(managePlayersCard);      
     }
+  }
+
+  function createPlayerScoreCard(name, symbol, color, score) {
+    const playerText = document.createElement('p');
+    playerText.classList.add('player');
+    
+    playerSymbol = document.createElement('span')
+    playerSymbol.style.color = color;
+    playerSymbol.textContent = symbol + ' ';
+    playerText.appendChild(playerSymbol);
+
+    const playerName = document.createElement('span');
+    playerName.textContent = name;
+    playerText.appendChild(playerName);
+
+    const playerScore = document.createElement('p');
+    playerScore.classList.add('player-score');
+    playerScore.textContent = score;
+
+    const playerScoreCard = document.createElement('li');
+    playerScoreCard.classList.add('player-card');
+
+    playerScoreCard.appendChild(playerText);
+    playerScoreCard.appendChild(playerScore);
+
+    return playerScoreCard;
+  }
+
+  function createManagePlayersCard(id, name, symbol, color, score) {
+    const managePlayersCard = document.createElement('article');
+    managePlayersCard.classList.add('manage-player-card');
+
+    const managePlayersCardHeader = document.createElement('header');
+
+    const managePlayersCardHeading = document.createElement('h3');
+    managePlayersCardHeading.textContent = name;
+    managePlayersCardHeader.appendChild(managePlayersCardHeading);
+
+    const managePlayersOrderButtons = document.createElement('div');
+    managePlayersOrderButtons.classList.add('order-buttons');
+    
+    const backButton = document.createElement('button');
+    const backButtonImage = document.createElement('img');
+    backButtonImage.setAttribute('src', './res/arrow-left-thick.svg');
+    backButtonImage.setAttribute('alt', 'left arrow');
+    backButton.appendChild(backButtonImage);
+
+    const forwardButton = document.createElement('button');
+    const forwardButtonImage = document.createElement('img');
+    forwardButtonImage.setAttribute('src', './res/arrow-right-thick.svg');
+    forwardButtonImage.setAttribute('alt', 'right arrow');
+    forwardButton.appendChild(forwardButtonImage);
+
+    managePlayersOrderButtons.appendChild(backButton);
+    managePlayersOrderButtons.appendChild(forwardButton);
+    managePlayersCardHeader.appendChild(managePlayersOrderButtons);
+    managePlayersCard.appendChild(managePlayersCardHeader);
+
+    const managePlayersScore = document.createElement('div');
+    managePlayersScore.classList.add('score');
+    const managePlayersScoreText = document.createElement('p');
+    managePlayersScoreText.textContent = 'Score:'
+    const managePlayersScoreNumber = document.createElement('p');
+    managePlayersScoreNumber.textContent = score;
+
+    managePlayersScore.appendChild(managePlayersScoreText);
+    managePlayersScore.appendChild(managePlayersScoreNumber);
+    managePlayersCard.appendChild(managePlayersScore);
+
+    const managePlayersName = document.createElement('div');
+    managePlayersName.classList.add('form-control');
+    const managePlayersNameInput = document.createElement('input');
+    managePlayersNameInput.value = name;
+    managePlayersNameInput.id = `player-${id}-name`;
+    const managePlayersNameLabel = document.createElement('label');
+    managePlayersNameLabel.textContent = 'Name:';
+    managePlayersNameLabel.setAttribute('for', `player-${id}-name`);
+    
+    managePlayersName.appendChild(managePlayersNameLabel);
+    managePlayersName.appendChild(managePlayersNameInput);
+    managePlayersCard.appendChild(managePlayersName);
+    
+    const managePlayersSymbol = document.createElement('div');
+    managePlayersSymbol.classList.add('form-control');
+    const managePlayersSymbolInput = document.createElement('input');
+    managePlayersSymbolInput.value = symbol;
+    managePlayersSymbolInput.id = `player-${id}-symbol`;
+    const managePlayersSymbolLabel = document.createElement('label');
+    managePlayersSymbolLabel.textContent = 'Symbol:';
+    managePlayersSymbolLabel.setAttribute('for', `player-${id}-symbol`);
+    
+    managePlayersSymbol.appendChild(managePlayersSymbolLabel);
+    managePlayersSymbol.appendChild(managePlayersSymbolInput);
+    managePlayersCard.appendChild(managePlayersSymbol);
+    
+    
+    const managePlayersColor = document.createElement('div');
+    managePlayersColor.classList.add('form-control');
+    const managePlayersColorInput = document.createElement('input');
+    managePlayersColorInput.style.color = color;
+    managePlayersColorInput.style.borderColor = color;
+    managePlayersColorInput.value = color;
+    managePlayersColorInput.id = `player-${id}-color`;
+    const managePlayersColorLabel = document.createElement('label');
+    managePlayersColorLabel.textContent = 'Color:';
+    managePlayersColorLabel.style.color = color;
+    managePlayersColorLabel.setAttribute('for', `player-${id}-color`);
+    
+    managePlayersColor.appendChild(managePlayersColorLabel);
+    managePlayersColor.appendChild(managePlayersColorInput);
+    managePlayersCard.appendChild(managePlayersColor);
+
+    const managePlayersButtons = document.createElement('div');
+    managePlayersButtons.classList.add('manage-buttons');
+    const managePlayersDeleteButton = document.createElement('button');
+    managePlayersDeleteButton.textContent = 'Delete';
+    managePlayersDeleteButton.classList.add('delete-button');
+    const managePlayersSaveButton = document.createElement('button');
+    managePlayersSaveButton.textContent = 'Save';
+    managePlayersSaveButton.classList.add('save-button');
+
+    managePlayersButtons.appendChild(managePlayersDeleteButton);
+    managePlayersButtons.appendChild(managePlayersSaveButton);
+    managePlayersCard.appendChild(managePlayersButtons);
+
+    managePlayersCard.playerId = id;
+
+    managePlayersSaveButton.addEventListener('click', (e) => {
+      const currentId = e.target.closest('article').playerId;
+      const currentPlayer = game.players.find((player) => player.id === currentId);
+      
+      currentPlayer.name = managePlayersNameInput.value;
+      currentPlayer.symbol = managePlayersSymbolInput.value;
+      currentPlayer.color = managePlayersColorInput.value;
+      
+      renderer.renderPlayers();
+    });
+    
+    managePlayersDeleteButton.addEventListener('click', (e) => {
+      const currentId = e.target.closest('article').playerId;
+      const currentPlayer = game.players.find((player) => player.id === currentId);
+      const currentPlayerIndex = game.players.indexOf(currentPlayer);
+      game.players.splice(currentPlayerIndex, 1);
+      
+      renderer.renderPlayers();
+    });
+    
+    forwardButton.addEventListener('click', (e) => {
+      const currentId = e.target.closest('article').playerId;
+      const currentPlayer = game.players.find((player) => player.id === currentId);
+      const currentPlayerIndex = game.players.indexOf(currentPlayer);
+      const players = game.players;
+      [players[currentPlayerIndex], players[currentPlayerIndex + 1]] = [players[currentPlayerIndex + 1], players[currentPlayerIndex]];
+
+      renderer.renderPlayers();
+    });
+
+    backButton.addEventListener('click', (e) => {
+      const currentId = e.target.closest('article').playerId;
+      const currentPlayer = game.players.find((player) => player.id === currentId);
+      const currentPlayerIndex = game.players.indexOf(currentPlayer);
+      const players = game.players;
+      [players[currentPlayerIndex], players[currentPlayerIndex - 1]] = [players[currentPlayerIndex - 1], players[currentPlayerIndex]];
+
+      renderer.renderPlayers();
+    });
+
+    return managePlayersCard;
   }
 
   function renderWin(winner) {
@@ -516,6 +525,7 @@ const renderer = (function initializeRenderer() {
     abortGameButton.classList.add('display-none');
     startGameButton.classList.remove('display-none');
   }
+
 
   return {renderBoard, renderTurn, renderFirstStatus, renderWin, renderTie, renderPlayers, startGame, finishGame, disableGameField, enableGameField, disableSettings, enableSettings, renderAbort};
 })();
