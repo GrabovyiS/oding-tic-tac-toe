@@ -148,8 +148,9 @@ dialog {
   top: 10%;
   left: 50%;
   transform: translateX(-50%);
+  max-height: 80vh;
   width: max(340px, 60vw);
-  border: none;
+  border: var(--border);
   
   
   #manage-players-close-button {
@@ -184,7 +185,6 @@ dialog::backdrop {
 dialog .dialog-wrapper {
   height: auto;
   overflow-y: auto;
-  border: var(--border);
   padding: 24px;
 }
 
