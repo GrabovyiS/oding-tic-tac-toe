@@ -215,6 +215,7 @@ const renderer = (function initializeRenderer() {
         })
 
         boardElement.appendChild(cell);
+        cell.style.fontSize = `${cell.offsetWidth / 1.5}px`;
       }
     }
   }
