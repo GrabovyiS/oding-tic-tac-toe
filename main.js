@@ -113,6 +113,8 @@ const game = (function initializeGame() {
 
   function checkWin() {
     const winningRowSize = game.getWinningRowSize();
+    console.log(winningRowSize);
+    console.log(game.gameBoard.length);
 
     for (let i = 0; i < game.gameBoard.length; i++) {
       for (let j = 0; j < game.gameBoard.length; j++) {
@@ -122,10 +124,11 @@ const game = (function initializeGame() {
           if (i + winningRowSize > game.gameBoard.length) {
             break;
           }
-          
+          console.log('entered', i, j)
           column.push(game.gameBoard[i + k][j]);
         }
-
+        console.log(column);
+        
         const row = [];
         for (let k = 0; k < winningRowSize; k++) {
           if (j + winningRowSize > game.gameBoard.length) {
@@ -140,17 +143,18 @@ const game = (function initializeGame() {
           if (i + winningRowSize > game.gameBoard.length || j + winningRowSize > game.gameBoard.length) {
             break;
           }
-
+          
           rightDiagonal.push(game.gameBoard[i + k][j + k]);
         }
         
         const leftDiagonal = [];
         for (let k = 0; k < winningRowSize; k++) {
-          if (i - winningRowSize < 0 || j - winningRowSize < 0) {
+          // gameBoard.length is maxIndex + 1, while 0 is the minindex. that is why we subtract 1 when going backwards
+          if (i + winningRowSize > game.gameBoard.length || j - (winningRowSize - 1) < 0) {
             break;
           }
-
-          leftDiagonal.push(game.gameBoard[i - k][j - k]);
+          
+          leftDiagonal.push(game.gameBoard[i + k][j - k]);
         }
 
         if (column.every((el) => el === column[0]) && column[0]) {
@@ -553,7 +557,7 @@ const renderer = (function initializeRenderer() {
       winningRowSizeInput.value = game.DEFAULT_WINNING_ROW_SIZE;
       game.setWinningRowSize(game.DEFAULT_WINNING_ROW_SIZE);
     } else {
-      game.setWinningRowSize(winningRowSizeInput.value);
+      game.setWinningRowSize(+winningRowSizeInput.value);
     }
 
 
