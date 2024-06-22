@@ -149,6 +149,7 @@ h2 {
   max-height: 80vh;
   width: max(340px, 60vw);
   border: var(--border);
+  overflow-y: auto;
   
   
   #manage-players-close-button {
