@@ -541,12 +541,16 @@ const renderer = (function initializeRenderer() {
   const gridSizeInput = document.querySelector('#grid-size');
   const winningRowSizeInput = document.querySelector('#win-condition');
   const defaultButton = document.querySelector('#default');
+
   const managePlayersButton = document.querySelector('#manage-players');
   const managePlayersDialog = document.querySelector('#manage-players-dialog');
+  const managePlayersDialogBackdrop = document.querySelector('#manage-dialog-backdrop');
   const managePlayersCloseButton = document.querySelector('#manage-players-close-button');
   const managePlayersDoneButton = document.querySelector('#done-button');
-  const managePlayersCloseButtons = [managePlayersCloseButton, managePlayersDoneButton];
+  const managePlayersCloseButtons = [managePlayersCloseButton, managePlayersDoneButton, managePlayersDialogBackdrop];
   const managePlayersCreateButton = document.querySelector('#create-player-button');
+
+  const errorMessageDialog = document.querySelector('#manage-error-dialog');
 
   startGameButton.addEventListener('click', (e) => {
     if (!gridSizeInput.value) {
@@ -561,7 +565,6 @@ const renderer = (function initializeRenderer() {
       game.setWinningRowSize(+winningRowSizeInput.value);
     }
 
-
     renderer.startGame();
     game.startGame();
     renderer.renderFirstStatus(game.currentPlayer);
@@ -573,32 +576,59 @@ const renderer = (function initializeRenderer() {
   })
   
   managePlayersButton.addEventListener('click', (e) => {
-    managePlayersDialog.showModal();
-  });
-  
-  managePlayersDialog.addEventListener('click', (e) => {    
-    // Clicking backdrop counts as clicking the element directly
-    // Clicking the wrapper child of the modal counts as bubbling (eventPhase === 3)
-    if (e.eventPhase === 2) {
-      managePlayersDialog.close();
-    }
+    showManageModal();
   });
   
   managePlayersCloseButtons.forEach((button) => {
     button.addEventListener('click', (e) => {
-      managePlayersDialog.close();
+      if (!managePlayersIsValid()) {
+        showInvalidMessageManage();
+        return;
+      }
+
+      hideManageModal();
     })
   });
+  
+  function managePlayersIsValid() {
+    return game.players.length >= 2;
+  }
 
+  function showInvalidMessageManage() {
+    errorMessageDialog.show();
+    managePlayersDialog.style.borderColor = 'rgb(160, 0, 0)';
+  }
+  
+  function showManageModal() {
+    managePlayersDialog.show();
+    managePlayersDialogBackdrop.style.display = 'block';
+  }
+  
+  function hideManageModal() {
+    managePlayersDialog.close();
+    managePlayersDialogBackdrop.style.display = 'none';
+    
+    hideInvalidMessageManage();
+  }
+  
+  function hideInvalidMessageManage() {
+    managePlayersDialog.style.borderColor = 'black';
+    errorMessageDialog.close();
+  }
+  
   managePlayersCreateButton.addEventListener('click', (e) => {
     game.createPlayer('New player', helpers.getRandomChar(), helpers.getRandomColor());
     renderer.renderPlayers();
+    
+    if (game.players.length >= 2 && errorMessageDialog.open) {
+      hideInvalidMessageManage();
+    }
   });
 
   defaultButton.addEventListener('click', (e) => {
     gridSizeInput.value = game.DEFAULT_GRID_SIZE;
     winningRowSizeInput.value = game.DEFAULT_WINNING_ROW_SIZE;
-  })
+  });
 })();
 
 

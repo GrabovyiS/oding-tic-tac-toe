@@ -137,7 +137,7 @@ h2 {
   margin-bottom: 12px;
 }
 
-dialog {
+#manage-players-dialog {
   position: fixed;
   top: 10%;
   left: 50%;
@@ -172,11 +172,29 @@ dialog {
   }
 }
 
-dialog::backdrop {
+#manage-error-dialog {
+  position: fixed;
+  top: 10vh;
+  right: 10vh;
+  left: auto;
+  border: var(--border);
+  border-color: rgb(160, 0, 0);
+  padding: 24px;
+  background-color: white;
+  max-width: 180px;
+}
+
+#manage-dialog-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, .3);
 }
 
-dialog .dialog-wrapper {
+#manage-players-dialog .dialog-wrapper {
   height: auto;
   overflow-y: auto;
   padding: 24px;

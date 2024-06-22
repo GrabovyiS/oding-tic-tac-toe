@@ -10,6 +10,7 @@
   <title>Tic Tac Toe</title>
 </head>
 <body>
+  <div id="manage-dialog-backdrop"></div>
   <dialog id="manage-players-dialog">
     <div class="dialog-wrapper">
       <header>
@@ -22,6 +23,9 @@
       </section>
       <button id="done-button">Done</button>
     </div>
+  </dialog>
+  <dialog id="manage-error-dialog">
+    <p>There must be at least two players!</p>
   </dialog>
   <div class="grid-container">
     <main>
