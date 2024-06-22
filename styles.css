@@ -137,6 +137,10 @@ h2 {
   margin-bottom: 12px;
 }
 
+.settings-error {
+  color: rgb(160, 0, 0);
+}
+
 #manage-players-dialog {
   position: fixed;
   top: 10%;

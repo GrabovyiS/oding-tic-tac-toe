@@ -551,6 +551,7 @@ const renderer = (function initializeRenderer() {
   const managePlayersCreateButton = document.querySelector('#create-player-button');
 
   const errorMessageDialog = document.querySelector('#manage-error-dialog');
+  const errorMessageSettings = document.querySelector('.settings-error');
 
   startGameButton.addEventListener('click', (e) => {
     if (!gridSizeInput.value) {
@@ -565,10 +566,61 @@ const renderer = (function initializeRenderer() {
       game.setWinningRowSize(+winningRowSizeInput.value);
     }
 
+    if (!settingsIsValid()) {
+      showInvalidMessageSettings();
+      console.log('invalid');
+      return;
+    }
+
+    hideInvalidMessageManage();
     renderer.startGame();
     game.startGame();
     renderer.renderFirstStatus(game.currentPlayer);
   });
+
+  function settingsIsValid() {
+    const gridSize = +gridSizeInput.value;
+    const winningRowSize = +winningRowSizeInput.value;
+
+    if (gridSize < winningRowSize) {
+      return false;
+    }
+
+    if (gridSize > 15) {
+      return false;
+    }
+
+    return true;
+  }
+
+  function showInvalidMessageSettings() {
+    const gridSize = +gridSizeInput.value;
+    const winningRowSize = +winningRowSizeInput.value;
+    
+    if (gridSize < winningRowSize && gridSize > 15) {
+      errorMessageSettings.textContent = 'Grid size must be less than 15 and Grid size must be more than Winning row size';
+      return;
+    }
+    
+    if (gridSize < winningRowSize) {
+      errorMessageSettings.textContent = 'Grid size must be more than Winning row size';
+      return;
+    }
+    
+    if (gridSize > 15) {
+      errorMessageSettings.textContent = 'Grid size must be less than 15';
+      return;
+    }
+  }
+  
+  function hideInvalidMessageSettings() {
+    errorMessageSettings.textContent = '';
+  }
+
+  function hideInvalidMessageManage() {
+    managePlayersDialog.style.borderColor = 'black';
+    errorMessageDialog.close();
+  }
 
   abortGameButton.addEventListener('click', (e) => {
     renderer.finishGame('ABORT');
@@ -615,7 +667,7 @@ const renderer = (function initializeRenderer() {
     managePlayersDialog.style.borderColor = 'black';
     errorMessageDialog.close();
   }
-  
+
   managePlayersCreateButton.addEventListener('click', (e) => {
     game.createPlayer('New player', helpers.getRandomChar(), helpers.getRandomColor());
     renderer.renderPlayers();
