@@ -192,13 +192,22 @@ const renderer = (function initializeRenderer() {
 
     boardElement.style.gridTemplateColumns = `repeat(${gameBoard.length}, 1fr)`;
     boardElement.style.gridTemplateRows = `repeat(${gameBoard.length}, 1fr)`;
-
+    
     for (let i = 0; i < gameBoard.length; i++) {
       for (let j = 0; j < gameBoard.length; j++) {
         let cell = document.createElement('div');
         cell.classList.add('cell');
         cell.row = i;
         cell.column = j;
+        
+        if (gameBoard.length > 7 && gameBoard.length <= 13) {
+          cell.style.borderWidth = '4px';
+          boardElement.style.borderWidth = '4px';
+        }
+        else if (gameBoard.length > 13) {
+          cell.style.borderWidth = '3px';
+          boardElement.style.borderWidth = '3px';
+        }
 
         cell.addEventListener('click', (e) => {
           if (clickedCellTaken(e.target.row, e.target.column)) {

@@ -101,7 +101,6 @@ h2 {
   border-right: var(--border);
   border-top: var(--border);
   font-weight: bold;
-  font-size: 4.2vmax;
 }
 
 .players, .settings {
