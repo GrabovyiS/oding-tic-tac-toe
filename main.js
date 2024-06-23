@@ -113,8 +113,6 @@ const game = (function initializeGame() {
 
   function checkWin() {
     const winningRowSize = game.getWinningRowSize();
-    console.log(winningRowSize);
-    console.log(game.gameBoard.length);
 
     for (let i = 0; i < game.gameBoard.length; i++) {
       for (let j = 0; j < game.gameBoard.length; j++) {
@@ -124,10 +122,8 @@ const game = (function initializeGame() {
           if (i + winningRowSize > game.gameBoard.length) {
             break;
           }
-          console.log('entered', i, j)
           column.push(game.gameBoard[i + k][j]);
         }
-        console.log(column);
         
         const row = [];
         for (let k = 0; k < winningRowSize; k++) {
@@ -587,7 +583,6 @@ const renderer = (function initializeRenderer() {
 
     if (!settingsIsValid()) {
       showInvalidMessageSettings();
-      console.log('invalid');
       return;
     }
 
