@@ -179,14 +179,15 @@ h2 {
 
 #manage-error-dialog {
   position: fixed;
-  top: 10vh;
-  right: 10vh;
-  left: auto;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
   border: var(--border);
   border-color: rgb(160, 0, 0);
   padding: 24px;
   background-color: white;
-  max-width: 180px;
+  /* max-width: 360px; */
+  color: rgb(160, 0, 0);
 }
 
 #manage-dialog-backdrop {
