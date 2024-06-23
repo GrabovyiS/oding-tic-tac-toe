@@ -420,6 +420,11 @@ const renderer = (function initializeRenderer() {
       const currentPlayer = game.players.find((player) => player.id === currentId);
       const currentPlayerIndex = game.players.indexOf(currentPlayer);
       const players = game.players;
+
+      if (currentPlayerIndex === players.length - 1) {
+        return;
+      }
+
       [players[currentPlayerIndex], players[currentPlayerIndex + 1]] = [players[currentPlayerIndex + 1], players[currentPlayerIndex]];
 
       renderer.renderPlayers();
@@ -430,6 +435,11 @@ const renderer = (function initializeRenderer() {
       const currentPlayer = game.players.find((player) => player.id === currentId);
       const currentPlayerIndex = game.players.indexOf(currentPlayer);
       const players = game.players;
+
+      if (currentPlayerIndex === 0) {
+        return;
+      }
+
       [players[currentPlayerIndex], players[currentPlayerIndex - 1]] = [players[currentPlayerIndex - 1], players[currentPlayerIndex]];
 
       renderer.renderPlayers();
