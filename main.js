@@ -203,6 +203,9 @@ const renderer = (function initializeRenderer() {
         else if (gameBoard.length > 13) {
           cell.style.borderWidth = '3px';
           boardElement.style.borderWidth = '3px';
+        } else {
+          cell.style.borderWidth = '7px';
+          boardElement.style.borderWidth = '7px';
         }
 
         cell.addEventListener('click', (e) => {
